@@ -1,0 +1,35 @@
+name: release
+
+# v0.1.0 のような tag を push したら npm の staged publishing に上げる。
+# 公開はメンテナが npmjs.com か `npm stage approve` で 2FA 承認したときだけ。
+# CI が乗っ取られても 2FA なしでは公開まで通らないようにするため。
+# 認証は npm の trusted publishing (OIDC) で、npm token は持たない。
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # tag と package.json の version がずれたまま出さない
+      - name: tag と version の一致を確認
+        run: |
+          version="v$(node -p 'require("./package.json").version')"
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "!! tag ($GITHUB_REF_NAME) と package.json ($version) が一致しない"
+            exit 1
+          fi
+      # npm stage は npm 11.15.0 以上が要る。Node 同梱の npm が古くても動くように上げる
+      - run: npm install -g npm@^11.15.0
+      - run: npm stage publish

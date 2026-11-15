@@ -1,0 +1,164 @@
+/* at proto 向けの小さなアプリ (pix、mote) の design token。Tailwind CSS v4 の theme と、
+   要素への base の規則。1px の罫線、塗らない card、有彩色は accent 1 色、という見た目の値。
+
+   使う側の CSS では `@import "tailwindcss"` の後、自分の `@theme` より前に import する。
+   `--color-*` などを `initial` で空にしてから定義し直すので、順序が逆だと使う側の token が消える。
+
+   `@theme static` なのは、使う側が class を書いたかどうかに関わらず全 token を CSS 変数として
+   出すため (SVG や inline style から `var(--color-…)` で参照できる)。
+
+   dark の値は `prefers-color-scheme` で `:root` の変数を差し替える。色相 6 種の段 (`-1`…`-4`) は
+   dark で並びが反転するので、段の名前で指定する。
+
+   文字サイズ (`--text-*`) と角丸 (`--radius-*`) の key を足したら、使う側で tailwind-merge を
+   使っている場合はその設定にも足す (未登録だと `text-brand` と `text-ink` を衝突と見なして落とす)。 */
+@theme static {
+  --color-*: initial;
+  --color-surface: #ffffff;
+  --color-surface-raised: #f6f8fa;
+  --color-line: #d0d7de;
+  --color-ink: #1f2328;
+  --color-ink-secondary: #424a53;
+  --color-ink-muted: #57606a;
+  --color-accent: #145aa8;
+  --color-on-accent: #ffffff;
+  --color-danger: #c62828;
+  --color-blue-1: #b4dcff;
+  --color-blue-2: #6cb4f5;
+  --color-blue-3: #2f86e0;
+  --color-blue-4: #145aa8;
+  --color-green-1: #9be9a8;
+  --color-green-2: #40c463;
+  --color-green-3: #30a14e;
+  --color-green-4: #216e39;
+  --color-red-1: #fcc1c1;
+  --color-red-2: #f88080;
+  --color-red-3: #e84040;
+  --color-red-4: #a81818;
+  --color-yellow-1: #fff0a0;
+  --color-yellow-2: #ffd84a;
+  --color-yellow-3: #f4b400;
+  --color-yellow-4: #b88300;
+  --color-purple-1: #dcc6f5;
+  --color-purple-2: #b48ae8;
+  --color-purple-3: #8a50d0;
+  --color-purple-4: #5c2a99;
+  --color-gray-1: #c4c4c4;
+  --color-gray-2: #8a8a8a;
+  --color-gray-3: #505050;
+  --color-gray-4: #1a1a1a;
+
+
+  --font-*: initial;
+  --font-sans: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --text-*: initial;
+  --text-title: 1.5rem;
+  --text-title--line-height: 2rem;
+  --text-title--font-weight: 600;
+  --text-title--letter-spacing: -0.025em;
+  --text-brand: 1.25rem;
+  --text-brand--line-height: 1.75rem;
+  --text-brand--font-weight: 600;
+  --text-section: 1rem;
+  --text-section--line-height: 1.5rem;
+  --text-section--font-weight: 500;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.25rem;
+  --text-body--font-weight: 400;
+  --text-small: 0.75rem;
+  --text-small--line-height: 1rem;
+  --text-small--font-weight: 400;
+  --text-label: 0.625rem;
+  --text-label--line-height: 1rem;
+  --text-label--font-weight: 500;
+  --text-label--letter-spacing: 0.04em;
+  --text-code: 0.75rem;
+  --text-code--line-height: 1rem;
+  --text-code--font-weight: 400;
+
+  --radius-*: initial;
+  --radius-cell: 2px;
+  --radius-sm: 4px;
+  --radius-lg: 8px;
+}
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-surface: #0d1117;
+      --color-ink-muted: #8b949e;
+      --color-surface-raised: #161b22;
+      --color-line: #30363d;
+      --color-ink: #e6edf3;
+      --color-ink-secondary: #c9d1d9;
+      --color-accent: #6cb4f5;
+      --color-on-accent: #0d1117;
+      --color-danger: #f88080;
+      --color-blue-1: #145aa8;
+      --color-blue-2: #2f86e0;
+      --color-blue-3: #6cb4f5;
+      --color-blue-4: #b4dcff;
+      --color-green-1: #216e39;
+      --color-green-2: #30a14e;
+      --color-green-3: #40c463;
+      --color-green-4: #9be9a8;
+      --color-red-1: #a81818;
+      --color-red-2: #e84040;
+      --color-red-3: #f88080;
+      --color-red-4: #fcc1c1;
+      --color-yellow-1: #b88300;
+      --color-yellow-2: #f4b400;
+      --color-yellow-3: #ffd84a;
+      --color-yellow-4: #fff0a0;
+      --color-purple-1: #5c2a99;
+      --color-purple-2: #8a50d0;
+      --color-purple-3: #b48ae8;
+      --color-purple-4: #dcc6f5;
+      --color-gray-1: #1a1a1a;
+      --color-gray-2: #505050;
+      --color-gray-3: #8a8a8a;
+      --color-gray-4: #c4c4c4;
+    }
+  }
+  body {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+  a {
+    color: var(--color-ink-muted);
+    text-decoration: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 2px;
+  }
+  a:hover {
+    color: var(--color-accent);
+    text-decoration-color: currentColor;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: var(--text-code);
+    line-height: var(--text-code--line-height);
+    background: var(--color-surface-raised);
+    border-radius: var(--radius-sm);
+    padding: 1px 4px;
+    overflow-wrap: anywhere;
+  }
+  pre code {
+    padding: 0;
+    background: none;
+    white-space: pre;
+    overflow-wrap: normal;
+  }
+}
